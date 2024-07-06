@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./assets/Browser_Logo.jpeg">
+    <title>Customer Management Portal</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <img src="./assets/fundtec_logo.png" alt="">
+        <a class="navbar-brand" href="#">Customer Management</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="add_customer.html">Add Customer</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="customer_list.html">Customer List</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header  text-white">
+                Customer List
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customerTableBody">
+                       
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        function loadCustomers() {
+            let customers = JSON.parse(localStorage.getItem('customers')) || [];
+            let tableBody = document.getElementById('customerTableBody');
+            tableBody.innerHTML = '';
+            customers.forEach((customer, index) => {
+                let row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${customer.name}</td>
+                    <td>${customer.email}</td>
+                    <td>${customer.phone}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="editCustomer(${index})">Edit</button>
+                        <button class="btn btn-primary btn-sm" onclick="deleteCustomer(${index})">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function deleteCustomer(index) {
+            let customers = JSON.parse(localStorage.getItem('customers')) || [];
+            customers.splice(index, 1);
+            localStorage.setItem('customers', JSON.stringify(customers));
+            loadCustomers();
+        }
+
+        function editCustomer(index) {
+            let customers = JSON.parse(localStorage.getItem('customers')) || [];
+            let customer = customers[index];
+            let newName = prompt('Enter new name', customer.name);
+            let newEmail = prompt('Enter new email', customer.email);
+            let newPhone = prompt('Enter new phone', customer.phone);
+            if (newName && newEmail && newPhone) {
+                customers[index] = { name: newName, email: newEmail, phone: newPhone };
+                localStorage.setItem('customers', JSON.stringify(customers));
+                loadCustomers();
+            }
+        }
+        window.onload = loadCustomers;
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
